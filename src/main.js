@@ -18,6 +18,10 @@ import { renderCreatives } from './pages/Creatives.js';
 import { renderHypeRadar } from './pages/HypeRadar.js';
 import { renderNichoExplorer } from './pages/NichoExplorer.js';
 import { renderAssistant } from './pages/Assistant.js';
+import { renderValidador } from './pages/Validador.js';
+import { renderOfferKit } from './pages/OfferKit.js';
+import { renderLandingGen } from './pages/LandingGen.js';
+import { renderSimulador } from './pages/Simulador.js';
 
 initTheme();
 renderSidebar();
@@ -49,6 +53,10 @@ registerRoute('/creatives', () => showPage('/creatives', renderCreatives));
 registerRoute('/hype', () => showPage('/hype', renderHypeRadar));
 registerRoute('/nichos', () => showPage('/nichos', renderNichoExplorer));
 registerRoute('/assistente', () => showPage('/assistente', renderAssistant));
+registerRoute('/validador', () => showPage('/validador', renderValidador));
+registerRoute('/offerkit', () => showPage('/offerkit', renderOfferKit));
+registerRoute('/landing', () => showPage('/landing', renderLandingGen));
+registerRoute('/simulador', () => showPage('/simulador', renderSimulador));
 
 window.addEventListener('themechange', () => renderSidebar());
 initRouter();
