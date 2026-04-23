@@ -1,7 +1,7 @@
 import { products, getProductImage } from '../data/products.js';
 import { keywords } from '../data/keywords.js';
 import { getMarketplace, getMpBadge, marketplaces } from '../data/marketplaces.js';
-import { formatCurrency, formatNumber, formatPercent } from '../utils/helpers.js';
+import { formatCurrency, formatNumber, formatPercent , renderImage } from '../utils/helpers.js';
 
 const botPersonality = {
   name: 'TrendBot',
@@ -99,7 +99,7 @@ function renderProductCards(prods) {
     const img = getProductImage(p.imgType, p);
     const mp = getMarketplace(p.marketplace);
     return `<div class="bot-product-card" data-product-id="${p.id}">
-      <div class="bot-prod-img" style="background:${img.gradient}"><img src="${img.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'"/></div>
+      <div class="bot-prod-img" style="overflow:hidden">${renderImage(p.imageUrl, p.title)}</div>
       <div class="bot-prod-info">
         <div class="bot-prod-name">${p.name}</div>
         <div class="bot-prod-price">${formatCurrency(p.price)}</div>

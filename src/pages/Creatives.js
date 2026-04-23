@@ -1,6 +1,6 @@
 import { creatives } from '../data/creatives.js';
 import { marketplaces, getMarketplace, getMpBadge } from '../data/marketplaces.js';
-import { formatNumber, formatCurrency } from '../utils/helpers.js';
+import { formatNumber, formatCurrency , renderImage } from '../utils/helpers.js';
 
 let filterMp = 'all';
 
@@ -71,8 +71,9 @@ export function renderCreatives() {
       const mp = getMarketplace(c.marketplace);
       return `
         <div class="creative-card animate-in">
-          <div class="creative-thumb" style="background:${c.thumbnail}">
-            ${c.type === 'video' ? '<div class="play-icon"></div>' : '<span>IMAGEM</span>'}
+          <div class="creative-thumb" style="overflow:hidden;position:relative">
+            ${renderImage(c.thumbnailUrl || c.imageUrl, c.title)}
+            ${c.type === 'video' ? '<div class="play-icon"></div>' : ''}
           </div>
           <div class="creative-body">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">

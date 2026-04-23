@@ -1,6 +1,6 @@
 import { getMarketplace, getMpBadge, getMpLogo } from '../data/marketplaces.js';
 import { getProductImage } from '../data/products.js';
-import { formatCurrency, formatNumber } from '../utils/helpers.js';
+import { formatCurrency, formatNumber , renderImage } from '../utils/helpers.js';
 
 export function initProductModal() {
   // Add modal container to body
@@ -28,7 +28,7 @@ export function showProductModal(product) {
         <button class="product-modal-close" id="pm-close">X</button>
         <div class="product-modal-header">
           <div class="product-modal-img" style="background:${img.gradient};overflow:hidden">
-            <img src="${img.img}" alt="${product.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md)" onerror="this.style.display='none'"/>
+            ${renderImage(product.imageUrl, product.title)}
           </div>
           <div class="product-modal-info">
             <div style="margin-bottom:8px">${getMpBadge(mp)}</div>

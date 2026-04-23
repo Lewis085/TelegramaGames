@@ -6,7 +6,7 @@ import { getTopCreatives } from '../data/creatives.js';
 import { trendData } from '../data/trends.js';
 import { getUnreadAlerts } from '../data/alerts.js';
 import { marketplaces, getMarketplace, getMpBadge, getMpLogo } from '../data/marketplaces.js';
-import { formatNumber, formatCurrency, formatPercent } from '../utils/helpers.js';
+import { formatNumber, formatCurrency, formatPercent , renderImage } from '../utils/helpers.js';
 
 let charts = [];
 
@@ -100,7 +100,7 @@ export function renderDashboard() {
     const img = getProductImage(p.imgType, p);
     return `<div class="growth-item" style="cursor:pointer" data-pid="${p.id}">
       <div style="width:36px;height:36px;border-radius:8px;background:${img.gradient};flex-shrink:0;overflow:hidden;position:relative">
-        <img src="${img.img}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.style.display='none'"/>
+        ${renderImage(p.imageUrl, p.title)}
       </div>
       <div class="growth-info">
         <div class="growth-name">${p.name}</div>

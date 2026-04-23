@@ -1,6 +1,6 @@
 import { products, getProductImage } from '../data/products.js';
 import { marketplaces, getMarketplace, getMpBadge } from '../data/marketplaces.js';
-import { formatCurrency, formatNumber } from '../utils/helpers.js';
+import { formatCurrency, formatNumber , renderImage } from '../utils/helpers.js';
 
 let filterMp = 'all';
 
@@ -26,7 +26,7 @@ export function renderTrending() {
       return `
         <div class="product-card animate-in" data-product-id="${p.id}">
           <div class="product-img-placeholder" style="background:${img.gradient}">
-            <img src="${img.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md);position:absolute;top:0;left:0" onerror="this.style.display='none'"/>
+            ${renderImage(p.imageUrl, p.title, 'product-card-img')}
           </div>
           ${getMpBadge(mp)}
           <div class="product-name" style="margin-top:8px">${p.name}</div>

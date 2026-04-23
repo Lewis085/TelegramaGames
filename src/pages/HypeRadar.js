@@ -1,6 +1,6 @@
 import { products, getProductImage } from '../data/products.js';
 import { getMarketplace, getMpBadge, marketplaces } from '../data/marketplaces.js';
-import { formatCurrency, formatNumber } from '../utils/helpers.js';
+import { formatCurrency, formatNumber , renderImage } from '../utils/helpers.js';
 
 const phaseConfig = {
   explodindo: { label: '🔥 Explodindo', color: '#ef4444', bg: 'rgba(239,68,68,0.12)', desc: 'Crescimento explosivo agora' },
@@ -69,7 +69,7 @@ export function renderHypeRadar() {
         return `
           <div class="hype-card animate-in" data-product-id="${p.id}">
             <div class="hype-card-img" style="background:${img.gradient}">
-              <img src="${img.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'"/>
+              ${renderImage(p.imageUrl, p.title)}
               <div class="hype-score-badge" style="background:${scoreColor}">${p.hypeScore}</div>
               <div class="hype-phase-tag" style="background:${phase.bg};color:${phase.color}">${phase.label}</div>
             </div>

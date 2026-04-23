@@ -1,8 +1,8 @@
 // Simulated viral creatives / ads data
 export const creatives = [
   {
-    id: 1, title: 'Serum Vitamina C — Antes e Depois',
-    marketplace: 'tiktok', type: 'video', format: 'UGC Review',
+    id: 1, url: 'https://example.com/c/1', title: 'Serum Vitamina C — Antes e Depois',
+    source: 'tiktok', type: 'video', format: 'UGC Review',
     impressions: 4800000, clicks: 312000, ctr: 6.5, conversions: 18400,
     spend: 48000, revenue: 549560, roas: 11.4,
     hook: '"Eu nao acreditei quando vi o resultado em 7 dias..."',
@@ -10,8 +10,8 @@ export const creatives = [
     status: 'active', daysRunning: 14
   },
   {
-    id: 2, title: 'Garrafa Termica — Teste de Gelo 24h',
-    marketplace: 'shopee', type: 'video', format: 'Product Demo',
+    id: 2, url: 'https://example.com/c/2', title: 'Garrafa Termica — Teste de Gelo 24h',
+    source: 'shopee', type: 'video', format: 'Product Demo',
     impressions: 3200000, clicks: 224000, ctr: 7.0, conversions: 15600,
     spend: 24000, revenue: 622440, roas: 25.9,
     hook: '"Coloquei gelo as 6h da manha e olha o resultado as 6h da noite"',
@@ -19,8 +19,8 @@ export const creatives = [
     status: 'active', daysRunning: 21
   },
   {
-    id: 3, title: 'Air Fryer — 5 Receitas em 10 Min',
-    marketplace: 'mercadolivre', type: 'video', format: 'Tutorial',
+    id: 3, url: 'https://example.com/c/3', title: 'Air Fryer — 5 Receitas em 10 Min',
+    source: 'mercadolivre', type: 'video', format: 'Tutorial',
     impressions: 5600000, clicks: 280000, ctr: 5.0, conversions: 12800,
     spend: 84000, revenue: 3710720, roas: 44.2,
     hook: '"Com essa Air Fryer eu nunca mais pedi delivery"',
@@ -28,8 +28,8 @@ export const creatives = [
     status: 'active', daysRunning: 30
   },
   {
-    id: 4, title: 'Pelucia Capivara — Unboxing Viral',
-    marketplace: 'shopee', type: 'video', format: 'Unboxing',
+    id: 4, url: 'https://example.com/c/4', title: 'Pelucia Capivara — Unboxing Viral',
+    source: 'shopee', type: 'video', format: 'Unboxing',
     impressions: 8200000, clicks: 574000, ctr: 7.0, conversions: 8400,
     spend: 12000, revenue: 419160, roas: 34.9,
     hook: '"Gente, olha o tamanho dessa capivara que chegou"',
@@ -37,8 +37,8 @@ export const creatives = [
     status: 'paused', daysRunning: 45
   },
   {
-    id: 5, title: 'Lip Tint — Comparativo 8 Marcas',
-    marketplace: 'tiktok', type: 'video', format: 'Comparativo',
+    id: 5, url: 'https://example.com/c/5', title: 'Lip Tint — Comparativo 8 Marcas',
+    source: 'tiktok', type: 'video', format: 'Comparativo',
     impressions: 6100000, clicks: 427000, ctr: 7.0, conversions: 22800,
     spend: 36000, revenue: 453720, roas: 12.6,
     hook: '"Testei 8 lip tints pra voce nao precisar. O melhor foi..."',
@@ -46,8 +46,8 @@ export const creatives = [
     status: 'active', daysRunning: 18
   },
   {
-    id: 6, title: 'Creatina — Resultados 90 Dias',
-    marketplace: 'mercadolivre', type: 'image', format: 'Carrossel',
+    id: 6, url: 'https://example.com/c/6', title: 'Creatina — Resultados 90 Dias',
+    source: 'mercadolivre', type: 'image', format: 'Carrossel',
     impressions: 2800000, clicks: 168000, ctr: 6.0, conversions: 9200,
     spend: 32000, revenue: 642680, roas: 20.1,
     hook: '"90 dias de creatina: meu shape mudou completamente"',
@@ -55,8 +55,8 @@ export const creatives = [
     status: 'active', daysRunning: 25
   },
   {
-    id: 7, title: 'Conjunto Fitness — Try On Haul',
-    marketplace: 'shein', type: 'video', format: 'Try On',
+    id: 7, url: 'https://example.com/c/7', title: 'Conjunto Fitness — Try On Haul',
+    source: 'shein', type: 'video', format: 'Try On',
     impressions: 3900000, clicks: 273000, ctr: 7.0, conversions: 14200,
     spend: 28000, revenue: 850580, roas: 30.4,
     hook: '"Paguei R$59 nesse conjunto e olha a qualidade"',
@@ -64,8 +64,8 @@ export const creatives = [
     status: 'active', daysRunning: 12
   },
   {
-    id: 8, title: 'Echo Dot — Casa Inteligente Setup',
-    marketplace: 'amazon', type: 'video', format: 'Setup Guide',
+    id: 8, url: 'https://example.com/c/8', title: 'Echo Dot — Casa Inteligente Setup',
+    source: 'amazon', type: 'video', format: 'Setup Guide',
     impressions: 2100000, clicks: 126000, ctr: 6.0, conversions: 5800,
     spend: 45000, revenue: 1623420, roas: 36.1,
     hook: '"Transformei minha casa inteira por menos de R$300"',
