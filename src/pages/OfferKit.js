@@ -136,27 +136,27 @@ export function renderOfferKit() {
       const margem = preco > 0 ? (lucro / preco) * 100 : 0;
       const roasBE = lucro > 0 ? (preco / lucro).toFixed(2) : 0;
 
-      document.getElementById('out-lucro').innerText = \`R$ \${lucro.toFixed(2)}\`;
-      document.getElementById('out-margem').innerText = \`\${margem.toFixed(0)}%\`;
-      document.getElementById('out-roas').innerText = \`\${roasBE}x\`;
-      document.getElementById('out-cenario').innerText = \`R$ \${(lucro * 100).toFixed(2)}\`;
+      document.getElementById('out-lucro').innerText = `R$ ${lucro.toFixed(2)}`;
+      document.getElementById('out-margem').innerText = `${margem.toFixed(0)}%`;
+      document.getElementById('out-roas').innerText = `${roasBE}x`;
+      document.getElementById('out-cenario').innerText = `R$ ${(lucro * 100).toFixed(2)}`;
 
       // Copy
-      document.getElementById('out-headline').innerText = \`Aviso para \${pub}: O Fim da \${dor} Chegou Com o Novo \${prod}.\`;
+      document.getElementById('out-headline').innerText = `Aviso para ${pub}: O Fim da ${dor} Chegou Com o Novo ${prod}.`;
       
       const hooks = [
-        \`"Se você é de \${pub} e ainda sofre com \${dor}, pare de rolar a tela agora."\`,
-        \`"Acabaram de revelar o método que está acabando com \${dor} em 7 dias."\`,
-        \`"Por que ninguém está falando sobre esse novo \${prod} que tem \${dif}?"\`
+        `"Se você é de ${pub} e ainda sofre com ${dor}, pare de rolar a tela agora."`,
+        `"Acabaram de revelar o método que está acabando com ${dor} em 7 dias."`,
+        `"Por que ninguém está falando sobre esse novo ${prod} que tem ${dif}?"`
       ];
-      document.getElementById('out-hooks').innerHTML = hooks.map(h => \`<li style="padding:12px;background:var(--bg-1);border-radius:6px;font-size:14px;color:var(--text-primary)">\${h}</li>\`).join('');
+      document.getElementById('out-hooks').innerHTML = hooks.map(h => `<li style="padding:12px;background:var(--bg-1);border-radius:6px;font-size:14px;color:var(--text-primary)">${h}</li>`).join('');
 
-      document.getElementById('out-script').innerHTML = \`
-        <strong>[Hook]</strong> Você que faz parte de \${pub}, eu sei o quanto \${dor} atrapalha o seu dia a dia.<br><br>
+      document.getElementById('out-script').innerHTML = `
+        <strong>[Hook]</strong> Você que faz parte de ${pub}, eu sei o quanto ${dor} atrapalha o seu dia a dia.<br><br>
         <strong>[Problema]</strong> A maioria das soluções no mercado não funciona ou custa uma fortuna.<br><br>
-        <strong>[Solução]</strong> É por isso que o \${prod} viralizou. Ele não só resolve seu problema rápido, como também oferece \${dif}.<br><br>
+        <strong>[Solução]</strong> É por isso que o ${prod} viralizou. Ele não só resolve seu problema rápido, como também oferece ${dif}.<br><br>
         <strong>[Oferta/CTA]</strong> Estamos com 50% de desconto e frete grátis apenas para as próximas 24h. Clique em Saiba Mais e garanta o seu antes que o estoque acabe!
-      \`;
+      `;
 
     }, 1500);
   });

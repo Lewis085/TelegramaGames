@@ -107,7 +107,7 @@ export function renderSimulador() {
     
     document.getElementById('out-lucro').innerText = formatCurrency(lucro);
     document.getElementById('out-lucro').style.color = lucro > 0 ? 'var(--success)' : 'var(--danger)';
-    document.getElementById('out-margem').innerText = \`Margem: \${margem.toFixed(1)}%\`;
+    document.getElementById('out-margem').innerText = `Margem: ${margem.toFixed(1)}%`;
 
     if (ticket > 0) {
       const vendasMes = Math.ceil(meta / ticket);
