@@ -2,7 +2,6 @@ import './style.css';
 import './components/styles-extra.css';
 import { registerRoute, initRouter } from './utils/router.js';
 import { initTheme } from './utils/theme.js';
-import { renderSidebar } from './components/Sidebar.js';
 import { renderHeader } from './components/Header.js';
 import { initSearchModal } from './components/SearchModal.js';
 import { initProductModal } from './components/ProductModal.js';
@@ -27,7 +26,6 @@ import { renderCanalCerto } from './pages/CanalCerto.js';
 import { renderRadarMercado } from './pages/RadarMercado.js';
 
 initTheme();
-renderSidebar();
 initSearchModal();
 initProductModal();
 
