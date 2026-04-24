@@ -1,4 +1,6 @@
-:root,
+const fs = require('fs');
+
+const cssContent = `:root,
 [data-theme="dark"] {
   --bg-primary: #080c10;
   --bg-secondary: #111820;
@@ -257,3 +259,30 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);background:va
 .stagger-2{animation-delay:.08s;opacity:0}
 .stagger-3{animation-delay:.12s;opacity:0}
 .stagger-4{animation-delay:.16s;opacity:0}
+`;
+
+fs.writeFileSync('src/style.css', cssContent);
+
+// Fix styles-extra.css
+let extraCss = fs.readFileSync('src/components/styles-extra.css', 'utf8');
+
+extraCss = extraCss.replace(/\.creative-card\{[\s\S]*?\}/, '.creative-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s;cursor:pointer}');
+extraCss = extraCss.replace(/\.creative-card:hover\{[\s\S]*?\}/, '.creative-card:hover{border-color:var(--accent)}');
+
+extraCss = extraCss.replace(/\.hype-hero\{[\s\S]*?\}/, '.hype-hero{border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;background:var(--bg-card)}');
+extraCss = extraCss.replace(/\.nicho-hero\{[\s\S]*?\}/, '.nicho-hero{border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:16px;background:var(--bg-card)}');
+
+extraCss = extraCss.replace(/\.hype-card\{[\s\S]*?\}/, '.hype-card{background:var(--bg-card);border:1px solid var(--border);transition:border-color .2s;cursor:pointer;overflow:hidden;border-radius:10px}');
+extraCss = extraCss.replace(/\.hype-card:hover\{[\s\S]*?\}/, '.hype-card:hover{border-color:var(--accent)}');
+
+extraCss = extraCss.replace(/\.nicho-insight-card\{[\s\S]*?\}/, '.nicho-insight-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;transition:border-color .2s}');
+extraCss = extraCss.replace(/\.nicho-insight-card:hover\{[\s\S]*?\}/, '.nicho-insight-card:hover{border-color:var(--accent)}');
+
+extraCss = extraCss.replace(/\.nicho-opportunity-card\{[\s\S]*?\}/, '.nicho-opportunity-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}');
+extraCss = extraCss.replace(/\.nicho-opportunity-card:hover\{[\s\S]*?\}/, '.nicho-opportunity-card:hover{border-color:var(--accent)}');
+
+extraCss = extraCss.replace(/\.hype-pill\{[\s\S]*?\}/, '.hype-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);cursor:pointer;font-family:var(--font-body);font-size:11px;font-weight:500;transition:all .2s;color:var(--text-secondary)}');
+extraCss = extraCss.replace(/\.hype-pill:hover\{[\s\S]*?\}/, '.hype-pill:hover{border-color:var(--accent);color:var(--accent)}');
+extraCss = extraCss.replace(/\.hype-pill\.active\{[\s\S]*?\}/, '.hype-pill.active{border-color:var(--border-accent);color:var(--accent);background:var(--accent-soft)}');
+
+fs.writeFileSync('src/components/styles-extra.css', extraCss);
