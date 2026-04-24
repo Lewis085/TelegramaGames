@@ -1,5 +1,4 @@
 const fs = require('fs');
-const https = require('https');
 const path = require('path');
 
 const products = [
@@ -44,37 +43,18 @@ if (!fs.existsSync(targetDir)) {
   fs.mkdirSync(targetDir, { recursive: true });
 }
 
-function fetchJson(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); } catch (e) { reject(e); }
-      });
-    }).on('error', reject);
+async function fetchWithUA(url) {
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
   });
-}
-
-function downloadImage(url, filepath) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      if (res.statusCode !== 200) {
-        reject(new Error(`Failed with ${res.statusCode}`));
-        return;
-      }
-      const file = fs.createWriteStream(filepath);
-      res.pipe(file);
-      file.on('finish', () => {
-        file.close();
-        resolve();
-      });
-    }).on('error', reject);
-  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response;
 }
 
 async function run() {
-  console.log('Buscando imagens no MercadoLivre API...');
+  console.log('Buscando imagens no MercadoLivre API com User-Agent...');
   
   let productsCode = fs.readFileSync(path.join(__dirname, 'src', 'data', 'products.js'), 'utf8');
 
@@ -86,32 +66,31 @@ async function run() {
     console.log(`Buscando: ${item.name}...`);
     try {
       const searchUrl = `https://api.mercadolibre.com/sites/MLB/search?q=${encodeURIComponent(item.name)}&limit=1`;
-      const result = await fetchJson(searchUrl);
+      const res = await fetchWithUA(searchUrl);
+      const result = await res.json();
       
       if (result.results && result.results.length > 0) {
-        // MercadoLivre thumbnails are small. Replacing 'I' with 'O' usually gets a better resolution, or we just use the thumbnail directly to keep it optimized.
-        // Actually, the thumbnail is "-I.jpg", high res is "-O.jpg" or "-V.jpg". We'll use '-O.jpg' for clear but compressed images.
         let imgUrl = result.results[0].thumbnail;
         imgUrl = imgUrl.replace('-I.jpg', '-O.jpg').replace('http://', 'https://');
         
-        await downloadImage(imgUrl, filepath);
+        const imgRes = await fetchWithUA(imgUrl);
+        const buffer = await imgRes.arrayBuffer();
+        fs.writeFileSync(filepath, Buffer.from(buffer));
         console.log(`✅ Salvo: ${filename}`);
         
-        // Update the code string
+        // Match the entire imageUrl line up to the closing quote, keeping all leading context
         const regex = new RegExp(`(id:\\s*${item.id},.*?imageUrl:\\s*)'[^']+'`, 'g');
         productsCode = productsCode.replace(regex, `$1'${localUrl}'`);
 
       } else {
         console.log(`❌ Nao encontrado: ${item.name}`);
       }
-      // Be gentle to the API
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 300));
     } catch (err) {
       console.error(`Erro no item ${item.id}:`, err.message);
     }
   }
 
-  // Save the modified products.js
   fs.writeFileSync(path.join(__dirname, 'src', 'data', 'products.js'), productsCode);
   console.log('products.js atualizado com os links locais!');
 }
