@@ -1,4 +1,6 @@
-:root,
+const fs = require('fs');
+
+const cssContent = `:root,
 [data-theme="dark"] {
   --bg-primary: #0d0d0d;
   --bg-secondary: #111111;
@@ -257,3 +259,34 @@ input:focus,textarea:focus,select:focus{box-shadow:var(--shadow-inset), 0 0 0 2p
 .stagger-2{animation-delay:.1s;opacity:0}
 .stagger-3{animation-delay:.15s;opacity:0}
 .stagger-4{animation-delay:.2s;opacity:0}
+`;
+
+fs.writeFileSync('src/style.css', cssContent);
+
+// Fix styles-extra.css
+let extraCss = fs.readFileSync('src/components/styles-extra.css', 'utf8');
+
+extraCss = extraCss.replace(/\.creative-card\{[\s\S]*?\}/, '.creative-card{background:var(--bg-card);border:none;border-radius:var(--radius-card);overflow:hidden;transition:all .3s;cursor:pointer;box-shadow:var(--shadow-card)}');
+extraCss = extraCss.replace(/\.creative-card:hover\{[\s\S]*?\}/, '.creative-card:hover{box-shadow:var(--shadow-card), var(--accent-glow)}');
+
+extraCss = extraCss.replace(/\.hype-hero\{[\s\S]*?\}/, '.hype-hero{border:none;border-radius:var(--radius-card);padding:32px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;background:var(--bg-card);box-shadow:var(--shadow-card)}');
+extraCss = extraCss.replace(/\.nicho-hero\{[\s\S]*?\}/, '.nicho-hero{border:none;border-radius:var(--radius-card);padding:32px;margin-bottom:32px;display:flex;align-items:center;gap:20px;background:var(--bg-card);box-shadow:var(--shadow-card)}');
+
+extraCss = extraCss.replace(/\.hype-card\{[\s\S]*?\}/, '.hype-card{background:var(--bg-card);border:none;transition:all .3s;cursor:pointer;overflow:hidden;border-radius:var(--radius-card);box-shadow:var(--shadow-card)}');
+extraCss = extraCss.replace(/\.hype-card:hover\{[\s\S]*?\}/, '.hype-card:hover{box-shadow:var(--shadow-card), var(--accent-glow)}');
+
+extraCss = extraCss.replace(/\.nicho-insight-card\{[\s\S]*?\}/, '.nicho-insight-card{background:var(--bg-card);border:none;border-radius:var(--radius-card);padding:24px;text-align:center;transition:all .3s;box-shadow:var(--shadow-card)}');
+extraCss = extraCss.replace(/\.nicho-insight-card:hover\{[\s\S]*?\}/, '.nicho-insight-card:hover{box-shadow:var(--shadow-card), var(--accent-glow)}');
+
+extraCss = extraCss.replace(/\.nicho-opportunity-card\{[\s\S]*?\}/, '.nicho-opportunity-card{background:var(--bg-card);border:none;border-radius:var(--radius-card);padding:20px;transition:all .3s;box-shadow:var(--shadow-card)}');
+extraCss = extraCss.replace(/\.nicho-opportunity-card:hover\{[\s\S]*?\}/, '.nicho-opportunity-card:hover{box-shadow:var(--shadow-card), var(--accent-glow)}');
+
+extraCss = extraCss.replace(/\.hype-pill\{[\s\S]*?\}/, '.hype-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:50px;border:none;background:var(--bg-card);box-shadow:var(--shadow-btn);cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .25s;color:var(--text-secondary);font-family:var(--font-heading)}');
+extraCss = extraCss.replace(/\.hype-pill:hover\{[\s\S]*?\}/, '.hype-pill:hover{box-shadow:var(--shadow-inset);color:var(--accent)}');
+extraCss = extraCss.replace(/\.hype-pill\.active\{[\s\S]*?\}/, '.hype-pill.active{box-shadow:var(--shadow-inset);color:var(--accent);background:var(--bg-card)}');
+
+// Removing specific border declarations from extraCss
+extraCss = extraCss.replace(/border: 1px solid [^;]+;/g, 'border: none;');
+extraCss = extraCss.replace(/border:\.5px solid [^;]+;/g, 'border: none;');
+
+fs.writeFileSync('src/components/styles-extra.css', extraCss);
