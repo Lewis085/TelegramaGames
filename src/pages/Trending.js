@@ -25,7 +25,7 @@ export function renderTrending() {
       const discount = Math.round((1 - p.price / p.originalPrice) * 100);
       return `
         <div class="product-card animate-in" data-product-id="${p.id}">
-          <div class="product-img-placeholder" style="background:${img.gradient}">
+          <div class="product-image" style="background:${img.gradient}">
             ${renderImage(p.imageUrl, p.title, 'product-card-img')}
           </div>
           ${getMpBadge(mp)}
