@@ -39,6 +39,7 @@ const icons = {
 
 const executionTools = [
   { label: 'Canal Certo', icon: 'target', route: '/canalcerto' },
+  { label: 'Radar de Mercado', icon: 'compass', route: '/radarmercado' },
   { label: 'Validador de Produto', icon: 'checkCircle', route: '/validador' },
   { label: 'Kit de Oferta', icon: 'box', route: '/offerkit' },
   { label: 'Gerador de LP', icon: 'layout', route: '/landing' },

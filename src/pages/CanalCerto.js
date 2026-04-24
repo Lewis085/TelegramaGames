@@ -1,286 +1,190 @@
+import { products, getProductImage } from '../data/products.js';
+import { formatNumber, formatCurrency, renderImage } from '../utils/helpers.js';
+
+const catMap = [
+  { id: 'beleza', label: 'Beleza', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>', cats: ['Beleza'] },
+  { id: 'fitness', label: 'Fitness & Saúde', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>', cats: ['Saude'] },
+  { id: 'moda', label: 'Moda', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2l3 5h6l3-5"/><rect x="4" y="7" width="16" height="15" rx="2"/></svg>', cats: ['Moda'] },
+  { id: 'casa', label: 'Casa & Decoração', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>', cats: ['Casa & Decoracao'] },
+  { id: 'tech', label: 'Tecnologia', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>', cats: ['Eletronicos','Celulares','Informatica','Games'] },
+  { id: 'pet', label: 'Mundo Pet', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', cats: ['Brinquedos'] },
+  { id: 'diversos', label: 'Diversos', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>', cats: [] }
+];
+
+function getProductsForCat(cat) {
+  if (!cat.cats.length) return [...products].sort((a,b) => b.hypeScore - a.hypeScore).slice(0, 5);
+  return products.filter(p => cat.cats.some(c => p.category === c)).sort((a,b) => b.hypeScore - a.hypeScore).slice(0, 5);
+}
+
+function classify(p) {
+  const visualNiches = ['skincare','maquiagem','cuidados-cabelo','modeladores','pelucias','iluminacao','moda-praia','bolsas','jaquetas','oculos','vestidos','roupas-fitness','organizacao','entretenimento','casa-inteligente'];
+  const isVisual = visualNiches.includes(p.niche) || p.category === 'Moda' || p.category === 'Beleza';
+  const isHighTicket = p.price > 300;
+  const isYoung = ['tiktok','shopee','shein'].includes(p.source);
+  const hasSearch = p.sales > 20000;
+  return { isVisual, isHighTicket, isYoung, hasSearch };
+}
+
+function score(p) {
+  const c = classify(p);
+  let ttk = 50, meta = 50, gg = 50;
+  const tW = [], mW = [], gW = [];
+
+  if (c.isVisual) { ttk += 25; tW.push('Produto visual com alto fator wow, perfeito para conteúdo nativo.'); meta += 15; mW.push('Criativos de antes/depois e unboxing funcionam bem no feed.'); gg -= 15; gW.push('Formato de busca não captura apelo visual.'); }
+  if (c.isYoung) { ttk += 20; tW.push('Público jovem e engajado nessa plataforma.'); gg -= 10; gW.push('Público jovem pesquisa menos em buscadores tradicionais.'); }
+  if (c.isHighTicket) { ttk -= 15; tW.push('Ticket alto dificulta compra por impulso.'); meta += 15; mW.push('Excelente para funil com remarketing e LTV.'); gg += 20; gW.push('Busca intencional favorece decisão racional de ticket alto.'); }
+  else { ttk += 10; tW.push('Preço impulsivo favorece conversão rápida.'); }
+  if (c.hasSearch) { gg += 25; gW.push('Demanda comprovada com alto volume de vendas.'); meta += 10; mW.push('Validação de mercado facilita criação de público sósia.'); }
+  else { gg -= 10; gW.push('Volume de vendas ainda baixo para fundo de funil.'); meta += 10; mW.push('Produto precisa ser empurrado via descoberta.'); }
+
+  if (p.hypeScore > 80) { ttk += 10; tW.push('Produto em momento viral — timing perfeito.'); }
+  if (p.change > 100) { ttk += 5; meta += 5; }
+
+  ttk = Math.min(99, Math.max(10, ttk));
+  meta = Math.min(99, Math.max(10, meta));
+  gg = Math.min(99, Math.max(10, gg));
+
+  return [
+    { name: 'TikTok Ads', score: ttk, color: '#22c55e', icon: '🟢', why: tW.join(' ') },
+    { name: 'Meta Ads', score: meta, color: 'var(--accent)', icon: '🔵', why: mW.join(' ') },
+    { name: 'Google Ads', score: gg, color: '#eab308', icon: '🟡', why: gW.join(' ') }
+  ].sort((a,b) => b.score - a.score);
+}
+
+function kwGoogle(p) { return [`comprar ${p.name.toLowerCase()}`, `${p.name.toLowerCase()} vale a pena`, `melhor ${p.name.toLowerCase()} 2026`, `${p.name.toLowerCase()} preço`, `${p.niche} barato`]; }
+function kwMeta(p) { return ['Compradores Engajados', 'Compras Online', p.category, p.niche.replace(/-/g,' '), 'Frete Grátis']; }
+function kwTiktok(p) { return [`#${p.niche.replace(/-/g,'')}`, '#achados', '#tiktokfazcomprar', '#viral', `#${p.category.toLowerCase().replace(/ .*/,'')}`]; }
+
 export function renderCanalCerto() {
   const container = document.getElementById('page-content');
-  
-  // States
-  let step = 1;
-  let selectedCategory = null;
-  let selectedProduct = null;
+  let step = 1, selCat = null, selProd = null;
 
-  const categories = [
-    { id: 'beleza', name: 'Beleza & Cosméticos', icon: '✨' },
-    { id: 'fitness', name: 'Fitness & Saúde', icon: '💪' },
-    { id: 'pet', name: 'Mundo Pet', icon: '🐶' },
-    { id: 'casa', name: 'Casa & Decoração', icon: '🏠' },
-    { id: 'infoproduto', name: 'Infoprodutos & Cursos', icon: '📚' },
-    { id: 'alimentacao', name: 'Alimentação & Delivery', icon: '🍔' }
-  ];
-
-  const productsByCategory = {
-    beleza: [
-      { id: 'p1', name: 'Sérum Vitamina C', type: 'visual', ticket: 'baixo', age: 'jovem', search: 'medio' },
-      { id: 'p2', name: 'Escova Secadora 3 em 1', type: 'visual', ticket: 'baixo', age: 'jovem', search: 'alto' },
-      { id: 'p3', name: 'Kit Skincare Antissinais', type: 'neutro', ticket: 'medio', age: 'adulto', search: 'alto' }
-    ],
-    fitness: [
-      { id: 'p4', name: 'Cinta Modeladora Slim', type: 'visual', ticket: 'baixo', age: 'jovem', search: 'medio' },
-      { id: 'p5', name: 'Whey Protein Isolado', type: 'neutro', ticket: 'medio', age: 'adulto', search: 'alto' },
-      { id: 'p6', name: 'Smartwatch Esportivo', type: 'visual', ticket: 'medio', age: 'jovem', search: 'alto' }
-    ],
-    pet: [
-      { id: 'p7', name: 'Cama Pet Ortopédica', type: 'visual', ticket: 'medio', age: 'adulto', search: 'medio' },
-      { id: 'p8', name: 'Brinquedo Interativo Gatos', type: 'visual', ticket: 'baixo', age: 'jovem', search: 'baixo' },
-      { id: 'p9', name: 'Ração Super Premium', type: 'neutro', ticket: 'alto', age: 'adulto', search: 'alto' }
-    ],
-    casa: [
-      { id: 'p10', name: 'Umidificador Difusor LED', type: 'visual', ticket: 'baixo', age: 'jovem', search: 'medio' },
-      { id: 'p11', name: 'Mop Giratório Pro', type: 'visual', ticket: 'baixo', age: 'adulto', search: 'alto' },
-      { id: 'p12', name: 'Robô Aspirador Inteligente', type: 'visual', ticket: 'alto', age: 'adulto', search: 'alto' }
-    ],
-    infoproduto: [
-      { id: 'p13', name: 'Curso de Tráfego Pago', type: 'info', ticket: 'alto', age: 'adulto', search: 'alto' },
-      { id: 'p14', name: 'Planilha de Organização Financeira', type: 'info', ticket: 'baixo', age: 'jovem', search: 'medio' },
-      { id: 'p15', name: 'Mentoria de Emagrecimento', type: 'info', ticket: 'alto', age: 'adulto', search: 'medio' }
-    ],
-    alimentacao: [
-      { id: 'p16', name: 'Delivery de Hambúrguer Artesanal', type: 'local', ticket: 'baixo', age: 'jovem', search: 'alto' },
-      { id: 'p17', name: 'Marmitas Fit Congeladas', type: 'local', ticket: 'medio', age: 'adulto', search: 'alto' },
-      { id: 'p18', name: 'Curso de Confeitaria', type: 'info', ticket: 'medio', age: 'adulto', search: 'baixo' }
-    ]
-  };
-
-  function getRanking(product) {
-    let ttk = 50, meta = 50, gg = 50;
-    let ttkWhy = [], metaWhy = [], ggWhy = [];
-
-    // Lógica por trás do ranking
-    if (product.type === 'visual') {
-      ttk += 30; ttkWhy.push('Produto muito visual/impulsivo.');
-      meta += 20; metaWhy.push('Ótimo para anúncios em vídeo (Reels/Stories).');
-      gg -= 20; ggWhy.push('Baixo apelo visual no formato de texto.');
-    } else if (product.type === 'info') {
-      ttk -= 10; ttkWhy.push('Público do TikTok converte menos para ticket alto infoproduto direto.');
-      meta += 30; metaWhy.push('Canal ideal para lançamentos e perpétuo.');
-      gg += 20; ggWhy.push('Ótimo para fundo de funil e intenção.');
-    } else if (product.type === 'local') {
-      ttk -= 20; ttkWhy.push('Dificuldade de segmentação hiper-local.');
-      meta += 20; metaWhy.push('Boa segmentação por raio/região.');
-      gg += 30; ggWhy.push('Excelente para "perto de mim" ou "delivery".');
-    }
-
-    if (product.search === 'alto') {
-      gg += 30; ggWhy.push('Alto volume de buscas ativas mensais.');
-      ttk -= 10; ttkWhy.push('Público não está pesquisando, está descobrindo.');
-    } else if (product.search === 'baixo') {
-      gg -= 20; ggWhy.push('Baixíssimo volume de busca ativa.');
-      meta += 15; metaWhy.push('Produto deve ser empurrado via descoberta.');
-    }
-
-    if (product.age === 'jovem') {
-      ttk += 20; ttkWhy.push('Público principal da plataforma.');
-      gg -= 10; ggWhy.push('Jovens buscam menos em texto, mais em vídeo.');
-    } else if (product.age === 'adulto') {
-      ttk -= 15; ttkWhy.push('Fatia menor de público com poder aquisitivo alto nesta rede.');
-      meta += 10; metaWhy.push('Público comprador maduro muito consolidado.');
-    }
-
-    if (product.ticket === 'alto') {
-      ttk -= 10; ttkWhy.push('Jornada de compra mais longa, difícil no impulso.');
-      meta += 10; metaWhy.push('Bom com funil e remarketing.');
-      gg += 15; ggWhy.push('Busca intencional favorece tickets maiores.');
-    } else if (product.ticket === 'baixo') {
-      ttk += 15; ttkWhy.push('Ideal para compra por impulso de baixo ticket.');
-      meta += 5; metaWhy.push('Boa conversão por impulso no Feed.');
-    }
-
-    // Clamp scores 0-99
-    ttk = Math.min(99, Math.max(10, ttk));
-    meta = Math.min(99, Math.max(10, meta));
-    gg = Math.min(99, Math.max(10, gg));
-
-    const channels = [
-      { name: 'TikTok Ads', score: ttk, color: 'var(--success)', why: ttkWhy.join(' ') },
-      { name: 'Meta Ads', score: meta, color: 'var(--accent)', why: metaWhy.join(' ') },
-      { name: 'Google Ads', score: gg, color: 'var(--warning)', why: ggWhy.join(' ') }
-    ].sort((a, b) => b.score - a.score);
-
-    return channels;
-  }
-
-  function renderView() {
-    let html = `
-      <div class="animate-in" style="max-width:1000px;margin:0 auto">
-        <h2 style="margin-bottom:8px;display:flex;align-items:center;gap:10px">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-          Canal Certo
-        </h2>
-        <p style="color:var(--text-secondary);margin-bottom:32px">Inteligência de Tráfego. Descubra exatamente onde e como anunciar seu produto.</p>
-    `;
+  function render() {
+    let h = `<div class="animate-in" style="max-width:1060px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <h2 style="margin:0">Canal Certo</h2>
+      </div>
+      <p style="color:var(--text-secondary);margin-bottom:32px">Inteligência de Tráfego — descubra onde e como anunciar cada produto.</p>`;
 
     if (step === 1) {
-      html += `
-        <h3 style="margin-bottom:16px">1. Escolha o nicho de atuação</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:16px">
-          ${categories.map(c => `
-            <div class="card cat-card" data-id="${c.id}" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:20px;transition:all 0.2s">
-              <span style="font-size:24px">${c.icon}</span>
-              <span style="font-weight:600">${c.name}</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
+      h += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px">
+        ${catMap.map(c => `<div class="card cc-cat" data-id="${c.id}" style="cursor:pointer;padding:20px;display:flex;align-items:center;gap:12px;transition:border-color .2s">
+          <span style="color:var(--accent)">${c.icon}</span><span style="font-weight:600;font-size:14px">${c.label}</span>
+        </div>`).join('')}</div>`;
     } else if (step === 2) {
-      html += `
-        <button id="btn-back" class="btn btn-secondary" style="margin-bottom:24px">← Voltar</button>
-        <h3 style="margin-bottom:16px">2. Produtos com tração em ${categories.find(c=>c.id===selectedCategory).name}</h3>
-        <p style="color:var(--text-muted);margin-bottom:24px">Selecione um produto para visualizar o painel de inteligência de canal.</p>
-        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px">
-          ${productsByCategory[selectedCategory].map(p => `
-            <div class="card prod-card" data-id="${p.id}" style="cursor:pointer;padding:24px;border:1px solid var(--border);transition:all 0.2s">
-              <div style="font-weight:600;font-size:16px;margin-bottom:8px">${p.name}</div>
-              <div style="font-size:12px;color:var(--text-secondary);display:flex;gap:8px">
-                <span style="background:var(--bg-1);padding:4px 8px;border-radius:4px">${p.type === 'visual' ? '📸 Visual' : p.type === 'info' ? '📚 Info' : p.type === 'local' ? '📍 Local' : '📦 Físico'}</span>
-                <span style="background:var(--bg-1);padding:4px 8px;border-radius:4px">Ticket ${p.ticket}</span>
+      const cat = catMap.find(c=>c.id===selCat);
+      const prods = getProductsForCat(cat);
+      h += `<button id="cc-back" class="btn btn-secondary" style="margin-bottom:20px;font-size:13px">← Voltar</button>
+        <h3 style="margin-bottom:6px;font-size:16px">Produtos em alta — ${cat.label}</h3>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px">Clique para ver a análise de canal.</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+        ${prods.map(p => {
+          const img = getProductImage(p.imgType, p);
+          const badge = p.hypeScore >= 80 ? ['Explodindo','var(--success)'] : p.hypeScore >= 50 ? ['Subindo','var(--warning)'] : ['Estável','var(--text-muted)'];
+          return `<div class="card cc-prod" data-id="${p.id}" style="cursor:pointer;padding:16px;display:flex;gap:16px;align-items:center;transition:border-color .2s">
+            <div style="width:56px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:${img.gradient}">${renderImage(p.imageUrl, p.name)}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap">
+                <span>${formatCurrency(p.price)}</span><span>·</span><span>${formatNumber(p.sales)} vendas</span><span>·</span><span style="color:${badge[1]}">${badge[0]}</span>
               </div>
             </div>
-          `).join('')}
-        </div>
-      `;
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:20px;font-weight:800;color:var(--accent)">${p.hypeScore}</div>
+              <div style="font-size:10px;color:var(--text-muted)">Hype</div>
+            </div>
+          </div>`}).join('')}</div>`;
     } else if (step === 3) {
-      const p = productsByCategory[selectedCategory].find(x => x.id === selectedProduct);
-      const ranks = getRanking(p);
+      const p = products.find(x => x.id === selProd);
+      const ranks = score(p);
+      const img = getProductImage(p.imgType, p);
+      const sat = p.hypeScore > 75 ? ['Baixa','var(--success)','Poucos anunciantes escalando'] : p.hypeScore > 40 ? ['Média','var(--warning)','Mercado competitivo mas com espaço'] : ['Alta','var(--danger)','Muitos anunciantes — risco de CPA alto'];
+      const eng = p.change > 150 ? ['Viral','Retenção acima de 45% nos primeiros 3s'] : p.change > 50 ? ['Alto','Bom engajamento orgânico nas plataformas'] : ['Moderado','Engajamento estável, sem viralização'];
 
-      html += `
-        <button id="btn-back" class="btn btn-secondary" style="margin-bottom:24px">← Voltar para produtos</button>
-        
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px">
-          <div style="width:48px;height:48px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#000;font-size:24px">🎯</div>
-          <div>
-            <h2 style="margin:0">${p.name}</h2>
-            <div style="color:var(--text-secondary);font-size:14px">Painel de Inteligência de Tráfego</div>
-          </div>
+      h += `<button id="cc-back" class="btn btn-secondary" style="margin-bottom:20px;font-size:13px">← Voltar</button>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px">
+          <div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;background:${img.gradient}">${renderImage(p.imageUrl, p.name)}</div>
+          <div><h2 style="margin:0;font-size:20px">${p.name}</h2><div style="color:var(--text-secondary);font-size:13px">${p.category} · ${formatCurrency(p.price)} · ${formatNumber(p.sales)} vendas</div></div>
         </div>
 
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px">
-          
-          <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="display:grid;grid-template-columns:5fr 3fr;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:20px">
             <div class="card" style="padding:24px">
-              <h3 style="margin-bottom:24px;font-size:16px;border-bottom:1px solid var(--border);padding-bottom:12px">Ranking de Canais</h3>
-              <div style="display:flex;flex-direction:column;gap:20px">
-                ${ranks.map((r, index) => `
-                  <div style="display:flex;gap:16px;align-items:flex-start">
-                    <div style="font-size:32px;line-height:1">${index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}</div>
-                    <div style="flex:1">
-                      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-                        <div style="font-weight:700;font-size:16px">${r.name}</div>
-                        <div style="font-weight:800;font-size:18px;color:${r.color}">${r.score}/100</div>
-                      </div>
-                      <div style="width:100%;height:6px;background:var(--bg-1);border-radius:3px;margin-bottom:12px;overflow:hidden">
-                        <div style="width:${r.score}%;height:100%;background:${r.color};border-radius:3px"></div>
-                      </div>
-                      <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">
-                        <strong>Veredito:</strong> ${r.why}
-                      </div>
+              <h3 style="font-size:15px;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)">Ranking de Canais</h3>
+              <div style="display:flex;flex-direction:column;gap:24px">
+                ${ranks.map((r,i) => `<div style="display:flex;gap:14px;align-items:flex-start">
+                  <div style="font-size:28px;line-height:1">${['🥇','🥈','🥉'][i]}</div>
+                  <div style="flex:1">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                      <span style="font-weight:700;font-size:15px">${r.name}</span>
+                      <span style="font-weight:800;font-size:17px;color:${r.color}">${r.score}/100</span>
                     </div>
+                    <div style="height:5px;background:var(--bg-1);border-radius:3px;overflow:hidden;margin-bottom:10px"><div style="width:${r.score}%;height:100%;background:${r.color};border-radius:3px;transition:width .6s ease"></div></div>
+                    <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin:0">${r.why}</p>
                   </div>
-                `).join('')}
+                </div>`).join('')}
               </div>
             </div>
 
             <div class="card" style="padding:24px">
-              <h3 style="margin-bottom:24px;font-size:16px;border-bottom:1px solid var(--border);padding-bottom:12px">Keywords e Segmentação Recomendada</h3>
-              <div style="display:flex;flex-direction:column;gap:16px">
+              <h3 style="font-size:15px;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)">Keywords & Segmentação</h3>
+              <div style="display:flex;flex-direction:column;gap:18px">
                 <div>
-                  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:var(--warning)">Google Ads (Busca Exata/Frase)</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px">
-                    ${['comprar ' + p.name.toLowerCase(), p.name.toLowerCase() + ' funciona', 'melhor ' + p.name.toLowerCase(), 'preço ' + p.name.toLowerCase()].map(k => `<span style="background:rgba(234,179,8,0.1);color:var(--warning);padding:4px 10px;border-radius:12px;font-size:12px">${k}</span>`).join('')}
-                  </div>
+                  <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:#eab308">Google Ads — Busca Exata / Frase</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">${kwGoogle(p).map(k=>`<span style="background:rgba(234,179,8,.1);color:#eab308;padding:4px 10px;border-radius:10px;font-size:11px">${k}</span>`).join('')}</div>
                 </div>
                 <div>
-                  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:var(--accent)">Meta Ads (Interesses)</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px">
-                    ${['Compras Online', 'Compradores Engajados', selectedCategory, 'Novidades'].map(k => `<span style="background:rgba(249,115,22,0.1);color:var(--accent);padding:4px 10px;border-radius:12px;font-size:12px">${k}</span>`).join('')}
-                  </div>
+                  <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:var(--accent)">Meta Ads — Interesses</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">${kwMeta(p).map(k=>`<span style="background:rgba(249,115,22,.1);color:var(--accent);padding:4px 10px;border-radius:10px;font-size:11px">${k}</span>`).join('')}</div>
                 </div>
                 <div>
-                  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:var(--success)">TikTok Ads (Hashtags/Comportamento)</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px">
-                    ${['#achados', '#viral', '#comprinhas', '#' + selectedCategory].map(k => `<span style="background:rgba(34,197,94,0.1);color:var(--success);padding:4px 10px;border-radius:12px;font-size:12px">${k}</span>`).join('')}
-                  </div>
+                  <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:#22c55e">TikTok Ads — Hashtags / Categorias</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">${kwTiktok(p).map(k=>`<span style="background:rgba(34,197,94,.1);color:#22c55e;padding:4px 10px;border-radius:10px;font-size:11px">${k}</span>`).join('')}</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;flex-direction:column;gap:20px">
             <div class="card" style="padding:24px">
-              <h3 style="margin-bottom:16px;font-size:16px">Provas de Mercado</h3>
-              <div style="display:flex;flex-direction:column;gap:16px">
-                <div>
-                  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">Volume de Busca (30 dias)</div>
-                  <div style="font-size:20px;font-weight:700;color:var(--text-primary)">+${Math.floor(Math.random() * 400 + 100)}%</div>
-                  <div style="font-size:11px;color:var(--success)">Crescimento acentuado</div>
-                </div>
+              <h3 style="font-size:15px;margin-bottom:16px">Provas de Mercado</h3>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div><div style="font-size:11px;color:var(--text-secondary)">Crescimento (30d)</div><div style="font-size:22px;font-weight:700;color:var(--success)">+${p.change}%</div></div>
                 <div style="height:1px;background:var(--border)"></div>
-                <div>
-                  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">Saturação de Anunciantes</div>
-                  <div style="font-size:20px;font-weight:700;color:var(--text-primary)">Baixa</div>
-                  <div style="font-size:11px;color:var(--text-muted)">Apenas 12 anunciantes escalando</div>
-                </div>
+                <div><div style="font-size:11px;color:var(--text-secondary)">Saturação</div><div style="font-size:18px;font-weight:700;color:${sat[1]}">${sat[0]}</div><div style="font-size:11px;color:var(--text-muted)">${sat[2]}</div></div>
                 <div style="height:1px;background:var(--border)"></div>
-                <div>
-                  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">Engajamento Viral</div>
-                  <div style="font-size:20px;font-weight:700;color:var(--text-primary)">Alto</div>
-                  <div style="font-size:11px;color:var(--text-muted)">Vídeos retendo > 40% até 3s</div>
-                </div>
+                <div><div style="font-size:11px;color:var(--text-secondary)">Engajamento</div><div style="font-size:18px;font-weight:700">${eng[0]}</div><div style="font-size:11px;color:var(--text-muted)">${eng[1]}</div></div>
+                <div style="height:1px;background:var(--border)"></div>
+                <div><div style="font-size:11px;color:var(--text-secondary)">Views Estimados</div><div style="font-size:18px;font-weight:700">${p.views}</div></div>
               </div>
             </div>
-            
-            <div class="card" style="padding:24px;background:linear-gradient(135deg, rgba(249,115,22,0.1), rgba(0,0,0,0));border:1px solid rgba(249,115,22,0.2)">
-              <h3 style="margin-bottom:8px;font-size:15px;color:var(--accent)">Estratégia Sugerida</h3>
-              <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin:0">
-                Inicie a campanha pelo canal <strong>${ranks[0].name}</strong> validando os criativos e públicos amplos. Após as primeiras 50 conversões, ative o <strong>${ranks[1].name}</strong> para remarketing de carrinho abandonado e expansão de público sósia.
+            <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(249,115,22,.08),transparent);border:1px solid rgba(249,115,22,.18)">
+              <h4 style="font-size:14px;color:var(--accent);margin-bottom:8px">Estratégia Recomendada</h4>
+              <p style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin:0">
+                Comece validando pelo <strong>${ranks[0].name}</strong> com criativos de teste (3-5 variações). Após 50 conversões, ative o <strong>${ranks[1].name}</strong> para remarketing e público sósia. Orçamento sugerido de validação: <strong>${formatCurrency(p.price * 3)}/dia</strong>.
               </p>
             </div>
           </div>
-
-        </div>
-      `;
+        </div>`;
     }
 
-    html += `</div>`;
-    container.innerHTML = html;
-    attachEvents();
+    h += '</div>';
+    container.innerHTML = h;
+
+    document.querySelectorAll('.cc-cat').forEach(el => {
+      el.addEventListener('click', () => { selCat = el.dataset.id; step = 2; render(); });
+      el.onmouseenter = () => el.style.borderColor = 'var(--accent)';
+      el.onmouseleave = () => el.style.borderColor = 'var(--border)';
+    });
+    document.querySelectorAll('.cc-prod').forEach(el => {
+      el.addEventListener('click', () => { selProd = parseInt(el.dataset.id); step = 3; render(); });
+      el.onmouseenter = () => el.style.borderColor = 'var(--accent)';
+      el.onmouseleave = () => el.style.borderColor = 'var(--border)';
+    });
+    const back = document.getElementById('cc-back');
+    if (back) back.addEventListener('click', () => { step--; render(); });
   }
 
-  function attachEvents() {
-    document.querySelectorAll('.cat-card').forEach(el => {
-      el.addEventListener('click', () => {
-        selectedCategory = el.dataset.id;
-        step = 2;
-        renderView();
-      });
-      el.addEventListener('mouseenter', () => el.style.borderColor = 'var(--accent)');
-      el.addEventListener('mouseleave', () => el.style.borderColor = 'var(--border)');
-    });
-
-    document.querySelectorAll('.prod-card').forEach(el => {
-      el.addEventListener('click', () => {
-        selectedProduct = el.dataset.id;
-        step = 3;
-        renderView();
-      });
-      el.addEventListener('mouseenter', () => el.style.borderColor = 'var(--accent)');
-      el.addEventListener('mouseleave', () => el.style.borderColor = 'var(--border)');
-    });
-
-    const btnBack = document.getElementById('btn-back');
-    if (btnBack) {
-      btnBack.addEventListener('click', () => {
-        step--;
-        renderView();
-      });
-    }
-  }
-
-  renderView();
+  render();
 }

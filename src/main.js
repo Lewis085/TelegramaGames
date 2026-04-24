@@ -24,6 +24,7 @@ import { renderLandingGen } from './pages/LandingGen.js';
 import { renderSimulador } from './pages/Simulador.js';
 
 import { renderCanalCerto } from './pages/CanalCerto.js';
+import { renderRadarMercado } from './pages/RadarMercado.js';
 
 initTheme();
 renderSidebar();
@@ -56,6 +57,7 @@ registerRoute('/hype', () => showPage('/hype', renderHypeRadar));
 registerRoute('/nichos', () => showPage('/nichos', renderNichoExplorer));
 registerRoute('/assistente', () => showPage('/assistente', renderAssistant));
 registerRoute('/canalcerto', () => showPage('/canalcerto', renderCanalCerto));
+registerRoute('/radarmercado', () => showPage('/radarmercado', renderRadarMercado));
 registerRoute('/validador', () => showPage('/validador', renderValidador));
 registerRoute('/offerkit', () => showPage('/offerkit', renderOfferKit));
 registerRoute('/landing', () => showPage('/landing', renderLandingGen));
