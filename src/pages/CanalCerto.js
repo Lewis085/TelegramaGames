@@ -20,7 +20,7 @@ function classify(p) {
   const visualNiches = ['skincare','maquiagem','cuidados-cabelo','modeladores','pelucias','iluminacao','moda-praia','bolsas','jaquetas','oculos','vestidos','roupas-fitness','organizacao','entretenimento','casa-inteligente'];
   const isVisual = visualNiches.includes(p.niche) || p.category === 'Moda' || p.category === 'Beleza';
   const isHighTicket = p.price > 300;
-  const isYoung = ['tiktok','shopee','shein'].includes(p.source);
+  const isYoung = ['tiktok','shopee','shein'].includes(p.marketplace);
   const hasSearch = p.sales > 20000;
   return { isVisual, isHighTicket, isYoung, hasSearch };
 }
