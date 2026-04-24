@@ -47,5 +47,5 @@ export function renderImage(url, alt, className = '') {
   // Enforces valid URLs, lazy loading, and error fallbacks
   const safeUrl = url || getFallbackImage();
   const fallback = getFallbackImage().replace(/"/g, '&quot;');
-  return `<img src="${safeUrl}" alt="${alt}" class="${className}" loading="lazy" style="object-fit:cover;width:100%;height:100%;" onerror="this.onerror=null;this.src='${fallback}'"/>`;
+  return `<img src="${safeUrl}" alt="${alt}" class="${className}" loading="lazy" referrerpolicy="no-referrer" style="object-fit:cover;width:100%;height:100%;" onerror="this.onerror=null;this.src='${fallback}'"/>`;
 }
