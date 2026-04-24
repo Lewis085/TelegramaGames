@@ -1,4 +1,6 @@
-:root {
+const fs = require('fs');
+
+const cssContent = `:root {
   --font-heading: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -248,3 +250,30 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);background:rg
 .search-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding-top:15vh;animation:fadeIn 0.3s ease}
 .search-modal{background:var(--bg-card);border:1px solid var(--border-hover);border-radius:var(--radius-lg);width:600px;max-height:500px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.5), 0 0 40px rgba(120, 110, 255, 0.1);transform:scale(0.95);animation:slideUpFade 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
 .search-modal input{width:100%;padding:24px 28px;border:none;background:rgba(0,0,0,0.2);font-size:16px;color:var(--text-primary);outline:none;font-family:var(--font-body);border-radius:0;border-bottom:1px solid var(--border);box-shadow:none}
+`;
+
+fs.writeFileSync('src/style.css', cssContent);
+
+// Extra CSS for specialized cards
+let extraCss = fs.readFileSync('src/components/styles-extra.css', 'utf8');
+
+extraCss = extraCss.replace(/\.creative-card\{[\s\S]*?\}/, '.creative-card{background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .4s cubic-bezier(0.175,0.885,0.32,1.275);cursor:pointer;box-shadow:var(--shadow-glass)}');
+extraCss = extraCss.replace(/\.creative-card:hover\{[\s\S]*?\}/, '.creative-card:hover{transform:translateY(-6px);border-color:var(--border-hover);box-shadow:var(--shadow-hover)}');
+
+extraCss = extraCss.replace(/\.hype-hero\{[\s\S]*?\}/, '.hype-hero{border:1px solid var(--border);border-radius:var(--radius-xl);padding:40px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:var(--shadow-glass);position:relative;overflow:hidden}\n.hype-hero::before{content:"";position:absolute;top:-50%;right:-20%;width:60%;height:200%;background:radial-gradient(ellipse, rgba(120, 110, 255, 0.15) 0%, transparent 60%);transform:rotate(-15deg);pointer-events:none}');
+extraCss = extraCss.replace(/\.nicho-hero\{[\s\S]*?\}/, '.nicho-hero{border:1px solid var(--border);border-radius:var(--radius-xl);padding:40px;margin-bottom:32px;display:flex;align-items:center;gap:24px;background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:var(--shadow-glass)}');
+
+extraCss = extraCss.replace(/\.hype-card\{[\s\S]*?\}/, '.hype-card{background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);transition:all .4s cubic-bezier(0.175,0.885,0.32,1.275);cursor:pointer;overflow:hidden;border-radius:var(--radius-lg);box-shadow:var(--shadow-glass)}');
+extraCss = extraCss.replace(/\.hype-card:hover\{[\s\S]*?\}/, '.hype-card:hover{transform:translateY(-6px);border-color:var(--border-hover);box-shadow:var(--shadow-hover)}');
+
+extraCss = extraCss.replace(/\.nicho-insight-card\{[\s\S]*?\}/, '.nicho-insight-card{background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;text-align:center;transition:all .4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:var(--shadow-glass)}');
+extraCss = extraCss.replace(/\.nicho-insight-card:hover\{[\s\S]*?\}/, '.nicho-insight-card:hover{transform:translateY(-6px);border-color:var(--border-hover);box-shadow:var(--shadow-hover)}');
+
+extraCss = extraCss.replace(/\.nicho-opportunity-card\{[\s\S]*?\}/, '.nicho-opportunity-card{background:var(--bg-card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:all .4s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:var(--shadow-glass)}');
+extraCss = extraCss.replace(/\.nicho-opportunity-card:hover\{[\s\S]*?\}/, '.nicho-opportunity-card:hover{transform:translateY(-4px);border-color:var(--border-hover);box-shadow:var(--shadow-hover)}');
+
+extraCss = extraCss.replace(/\.hype-pill\{[\s\S]*?\}/, '.hype-pill{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:50px;border:1px solid var(--border);background:var(--bg-card);backdrop-filter:blur(10px);cursor:pointer;font-family:var(--font-body);font-size:12px;font-weight:600;transition:all .3s cubic-bezier(0.175,0.885,0.32,1.275);color:var(--text-secondary)}');
+extraCss = extraCss.replace(/\.hype-pill:hover\{[\s\S]*?\}/, '.hype-pill:hover{border-color:var(--border-hover);color:var(--text-primary);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}');
+extraCss = extraCss.replace(/\.hype-pill\.active\{[\s\S]*?\}/, '.hype-pill.active{border-color:transparent;color:#fff;background:var(--accent-gradient);box-shadow:var(--accent-glow)}');
+
+fs.writeFileSync('src/components/styles-extra.css', extraCss);
