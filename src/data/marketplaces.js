@@ -6,6 +6,7 @@ export const mpLogos = {
   tiktok: `<img src="/logos/tiktok.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px" alt="TikTok" />`,
   americanas: `<img src="/logos/americanas.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px" alt="Americanas" />`,
   shein: `<img src="/logos/shein.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px" alt="Shein" />`,
+  google: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
 };
 
 export const marketplaces = [
@@ -18,37 +19,43 @@ export const marketplaces = [
   {
     id: 'amazon', name: 'Amazon', shortName: 'AMZ',
     color: '#FF9900', colorDark: '#e68a00', bgLight: 'rgba(255,153,0,0.12)',
-    textOnBg: '#fff', badgeText: '#b36b00',
-    monthlySearches: '210M', growth: 8.7
+    textOnBg: '#FF9900', badgeText: '#b36b00',
+    monthlySearches: '180M', growth: 15.8
   },
   {
     id: 'shopee', name: 'Shopee', shortName: 'SHP',
-    color: '#EE4D2D', colorDark: '#d4401f', bgLight: 'rgba(238,77,45,0.1)',
-    textOnBg: '#fff', badgeText: '#c4350f',
-    monthlySearches: '195M', growth: 15.2
+    color: '#ee4d2d', colorDark: '#d83b1d', bgLight: 'rgba(238,77,45,0.12)',
+    textOnBg: '#ee4d2d', badgeText: '#b32b10',
+    monthlySearches: '210M', growth: 22.4
   },
   {
-    id: 'tiktok', name: 'TikTok Shop', shortName: 'TT',
-    color: '#25F4EE', colorSecondary: '#FE2C55', colorDark: '#1ac4bf',
-    bgLight: 'rgba(37,244,238,0.1)', textOnBg: '#111', badgeText: '#0e807b',
-    monthlySearches: '150M', growth: 42.8
+    id: 'tiktok', name: 'TikTok Shop', shortName: 'TTK',
+    color: '#000000', colorDark: '#222222', bgLight: 'rgba(0,0,0,0.1)',
+    textOnBg: '#00f2fe', badgeText: '#000000',
+    monthlySearches: '1.2B', growth: 85.6
+  },
+  {
+    id: 'google', name: 'Google Search', shortName: 'GOO',
+    color: '#4285F4', colorDark: '#3367D6', bgLight: 'rgba(66,133,244,0.1)',
+    textOnBg: '#4285F4', badgeText: '#4285F4',
+    monthlySearches: '8.5B', growth: 5.2
   },
   {
     id: 'americanas', name: 'Americanas', shortName: 'AMR',
-    color: '#E60014', colorDark: '#cc0012', bgLight: 'rgba(230,0,20,0.1)',
-    textOnBg: '#fff', badgeText: '#b3000f',
-    monthlySearches: '98M', growth: -2.1
+    color: '#E60014', colorDark: '#cc0011', bgLight: 'rgba(230,0,20,0.12)',
+    textOnBg: '#E60014', badgeText: '#99000d',
+    monthlySearches: '85M', growth: -5.2
   },
   {
     id: 'shein', name: 'Shein', shortName: 'SHN',
-    color: '#222', colorDark: '#555', bgLight: 'rgba(0,0,0,0.07)',
-    textOnBg: '#fff', badgeText: '#555',
-    monthlySearches: '175M', growth: 22.5
+    color: '#222222', colorDark: '#000000', bgLight: 'rgba(34,34,34,0.12)',
+    textOnBg: '#222222', badgeText: '#000000',
+    monthlySearches: '150M', growth: 45.2
   }
 ];
 
 export function getMarketplace(id) {
-  return marketplaces.find(m => m.id === id);
+  return marketplaces.find(m => m.id === id) || marketplaces[0];
 }
 
 export function getMpLogo(id, size = 20) {

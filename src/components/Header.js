@@ -3,7 +3,7 @@ import { getUnreadAlerts } from '../data/alerts.js';
 
 const pageTitles = {
   '/': { title: 'Dashboard', subtitle: 'Visao geral das tendencias' },
-  '/keywords': { title: 'Keywords', subtitle: 'Palavras-chave mais pesquisadas' },
+  '/keywords': { title: 'Pesquisar Trends', subtitle: 'Descubra oportunidades, concorrência e volume' },
   '/trending': { title: 'Produtos em Alta', subtitle: 'Os mais vendidos dos marketplaces' },
   '/creatives': { title: 'Criativos em Alta', subtitle: 'Anuncios e criativos que mais bombaram' },
   '/analysis': { title: 'Analise de Tendencias', subtitle: 'Insights e previsoes de mercado' },

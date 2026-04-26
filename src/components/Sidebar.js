@@ -3,7 +3,7 @@ import { getUnreadAlerts } from '../data/alerts.js';
 
 const navItems = [
   { label: 'Dashboard', icon: 'grid', route: '/' },
-  { label: 'Keywords', icon: 'search', route: '/keywords' },
+  { label: 'Pesquisar Trends', icon: 'search', route: '/keywords' },
   { label: 'Trending', icon: 'flame', route: '/trending' },
   { label: 'Hype Radar', icon: 'zap', route: '/hype' },
   { label: 'Criativos', icon: 'play', route: '/creatives' },

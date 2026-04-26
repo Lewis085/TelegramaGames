@@ -1,7 +1,7 @@
 const categories = [
-  'Eletrônicos', 'Moda', 'Beleza', 'Casa & Decoração', 'Esportes & Fitness',
-  'Saúde', 'Games', 'Brinquedos', 'Pet Shop', 'Automotivo',
-  'Alimentos', 'Bebês', 'Ferramentas', 'Informática', 'Celulares'
+  'Suplementos', 'Produtos de Beleza', 'Oportunidades Ocultas', 'Marcas Grandes',
+  'Eletrônicos', 'Moda', 'Casa & Decoração', 'Esportes & Fitness',
+  'Saúde', 'Games', 'Brinquedos', 'Pet Shop'
 ];
 
 function generateSparkData(trend = 'up', length = 12) {
