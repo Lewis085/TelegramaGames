@@ -22,6 +22,7 @@ import { renderValidador } from './pages/Validador.js';
 import { renderOfferKit } from './pages/OfferKit.js';
 import { renderLandingGen } from './pages/LandingGen.js';
 import { renderSimulador } from './pages/Simulador.js';
+import { renderLovableSpy } from './pages/LovableSpy.js';
 
 import { renderCanalCerto } from './pages/CanalCerto.js';
 import { renderRadarMercado } from './pages/RadarMercado.js';
@@ -62,6 +63,7 @@ registerRoute('/validador', () => showPage('/validador', renderValidador));
 registerRoute('/offerkit', () => showPage('/offerkit', renderOfferKit));
 registerRoute('/landing', () => showPage('/landing', renderLandingGen));
 registerRoute('/simulador', () => showPage('/simulador', renderSimulador));
+registerRoute('/lovablespy', () => showPage('/lovablespy', renderLovableSpy));
 
 window.addEventListener('themechange', () => renderSidebar());
 initRouter();
